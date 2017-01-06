@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from __future__ import division, print_function
+from __future__ import division
 
 import re
 import sys
@@ -83,10 +83,10 @@ if __name__ == "__main__":
                 for k in sorted(data_keys):
                     if k == '-':  continue
                     i += 1
-                    #print "\x1b[0;37;%sm%s\x1b[0m" % (i,' ' * int( (data_keys[k]/sum(data_keys.values()))*(PROGRESS_BAR_CHARS_WIDTH )))
-                    print("\x1b[0;37;%sm%s\x1b[0m" % (i,' ' * int(round( (data_keys[k]/sum(data_keys.values()))*(PROGRESS_BAR_CHARS_WIDTH )))), end="")
-                    
-                print("")
+                    #print("\x1b[0;37;%sm%s\x1b[0m" % (i,' ' * int(round( (data_keys[k]/sum(data_keys.values()))*(PROGRESS_BAR_CHARS_WIDTH )))), end="")
+                    sys.stdout.write("\x1b[0;37;%sm%s\x1b[0m" % (i,' ' * int(round( (data_keys[k]/sum(data_keys.values()))*(PROGRESS_BAR_CHARS_WIDTH )))) )
+                sys.stdout.write("\r")
+                sys.stdout.flush()
                 #for k in data_keys:  print "%s - %s" % (k,data_keys[k])
                 #print data_keys
                 last_sec_report = now
