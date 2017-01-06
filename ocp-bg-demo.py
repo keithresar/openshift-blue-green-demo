@@ -40,7 +40,10 @@ class Worker(Thread):
                 response_key = "-"
 
             finally:
-                self.results_queue.put({'key': response_key, 'size': response_size, 'duration_ms': int(response_duration*1000)})
+                self.results_queue.put({'key': response_key, 
+                                        'size': response_size, 
+                                        'duration_ms': int(response_duration*1000),
+                                        'time': int(time.time())})
 
 
 
@@ -50,24 +53,38 @@ if __name__ == "__main__":
     # TODO - output configuration
 
     try:
+        data = {}
         results_queue = Queue.Queue()
 
         # start threads
         for _ in range(THREAD_COUNT):  Worker(results_queue)
 
+        last_sec_report = int(time.time())
+        last_five_sec_report = int(time.time())
         while True:
             try:
                 o = results_queue.get(True,1)
-                print o
+                if o['time'] not in data:  data[o['time']] = [o,]
+                else:  data[o['time']].append(o)
             except Queue.Empty:
                 pass
 
-            # TODO - process results
-            # TODO - every 5 seconds output a summary onto a new line
+            now = time.time()
+            if now>last_sec_report:
+                last_sec_report = now
+                # TODO - every 1 second output progress bar
+                print data
+            if now>last_five_sec_report:
+                last_five_sec_report = now
+                # TODO - every 5 seconds output a summary onto a new line
 
     except (KeyboardInterrupt, SystemExit):
         print "\n"
         # TODO - summarize results
+        #   TODO - output total request count
+        #   TODO - output total request bytes xfered
+        #   TODO - output # of requests by response type
+        #   TODO - output # of requests by key
         sys.exit()
 
 
