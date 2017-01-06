@@ -33,7 +33,7 @@ class Worker(Thread):
                 response_duration = time.time()-start
                 response_size = len(html)
                 
-                m = re.search("([^\s\.]+)\.(jpg|png)",html)
+                m = re.search("([a-z]+)\.(jpg|png)",html)
                 response_key = m.group(1)
 
             except urllib2.HTTPError as e:
