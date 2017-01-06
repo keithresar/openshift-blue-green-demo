@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from __future__ import division, print_function
 
 import re
 import sys
@@ -11,7 +12,8 @@ from threading import Thread
 # TODO - store in yaml file
 TARGET_URL="http://104.238.162.143/images/bgtest.php"
 STATS_FREQ_SECS=5
-THREAD_COUNT=1
+THREAD_COUNT=10
+PROGRESS_BAR_CHARS_WIDTH=100
 
 
 
@@ -31,8 +33,8 @@ class Worker(Thread):
                 response_duration = time.time()-start
                 response_size = len(html)
                 
-                m = re.search("([^\s\.]+\.(jpg|png))",html)
-                response_key = m.group(0)
+                m = re.search("([^\s\.]+)\.(jpg|png)",html)
+                response_key = m.group(1)
 
             except urllib2.HTTPError as e:
                 response_duration = time.time()-start
@@ -69,17 +71,31 @@ if __name__ == "__main__":
             except Queue.Empty:
                 pass
 
-            now = time.time()
-            if now>last_sec_report:
-                last_sec_report = now
+            now = int(time.time())
+            if now>last_sec_report and last_sec_report in data:
                 # TODO - every 1 second output progress bar
-                print data
+                #print data
+                data_keys = {}
+                for item in data[last_sec_report]:
+                    if item['key'] not in data_keys:  data_keys[item['key']] = 1
+                    else:  data_keys[item['key']] += 1
+                i = 40
+                for k in sorted(data_keys):
+                    if k == '-':  continue
+                    i += 1
+                    #print "\x1b[0;37;%sm%s\x1b[0m" % (i,' ' * int( (data_keys[k]/sum(data_keys.values()))*(PROGRESS_BAR_CHARS_WIDTH )))
+                    print("\x1b[0;37;%sm%s\x1b[0m" % (i,' ' * int(round( (data_keys[k]/sum(data_keys.values()))*(PROGRESS_BAR_CHARS_WIDTH )))), end="")
+                    
+                print("")
+                #for k in data_keys:  print "%s - %s" % (k,data_keys[k])
+                #print data_keys
+                last_sec_report = now
             if now>last_five_sec_report:
                 last_five_sec_report = now
                 # TODO - every 5 seconds output a summary onto a new line
 
     except (KeyboardInterrupt, SystemExit):
-        print "\n"
+        print("\n")
         # TODO - summarize results
         #   TODO - output total request count
         #   TODO - output total request bytes xfered
