@@ -88,9 +88,8 @@ if __name__ == "__main__":
                 last_sec_report = now
             elif now>last_five_sec_report+5 and last_five_sec_report in data:
                 # every 5 seconds output a summary
-                #sys.stdout.write("%s\r" % ' '*(PROGRESS_BAR_CHARS_WIDTH*2+1))
+                data_keys = {}
                 sys.stdout.write(' '*(PROGRESS_BAR_CHARS_WIDTH+1)+"\r")
-                #sys.stdout.write("                                                                                                                \r")
                 sys.stdout.flush()
                 for sec in range(last_five_sec_report,now-1):
                     if sec not in data: continue
@@ -104,7 +103,6 @@ if __name__ == "__main__":
                     sys.stdout.write("\x1b[0;37;%sm%s: %s%% (%s reqs)\x1b[0m\t" % (i,k,int(round((data_keys[k]/sum(data_keys.values()))*100 )),data_keys[k]))
                 sys.stdout.write("\n")
                 sys.stdout.flush()
-
                 last_five_sec_report = now
 
     except (KeyboardInterrupt, SystemExit):
