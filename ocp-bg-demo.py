@@ -73,8 +73,7 @@ if __name__ == "__main__":
 
             now = int(time.time())
             if now>last_sec_report and last_sec_report in data:
-                # TODO - every 1 second output progress bar
-                #print data
+                # every 1 second output progress bar
                 data_keys = {}
                 for item in data[last_sec_report]:
                     if item['key'] not in data_keys:  data_keys[item['key']] = 1
@@ -87,12 +86,26 @@ if __name__ == "__main__":
                 sys.stdout.write("\r")
                 sys.stdout.flush()
                 last_sec_report = now
-            elif now>last_five_sec_report+5:
-                sys.stdout.write("xx%s\r" % ' '*(PROGRESS_BAR_CHARS_WIDTH+1))
+            elif now>last_five_sec_report+5 and last_five_sec_report in data:
+                # every 5 seconds output a summary
+                #sys.stdout.write("%s\r" % ' '*(PROGRESS_BAR_CHARS_WIDTH*2+1))
+                sys.stdout.write(' '*(PROGRESS_BAR_CHARS_WIDTH+1)+"\r")
+                #sys.stdout.write("                                                                                                                \r")
+                sys.stdout.flush()
+                for sec in range(last_five_sec_report,now-1):
+                    if sec not in data: continue
+                    for item in data[sec]:
+                        if item['key'] not in data_keys:  data_keys[item['key']] = 1
+                        else:  data_keys[item['key']] += 1
+                i = 40
+                for k in sorted(data_keys):
+                    if k == '-':  continue
+                    i += 1
+                    sys.stdout.write("\x1b[0;37;%sm%s: %s%% (%s reqs)\x1b[0m\t" % (i,k,int(round((data_keys[k]/sum(data_keys.values()))*100 )),data_keys[k]))
+                sys.stdout.write("\n")
                 sys.stdout.flush()
 
                 last_five_sec_report = now
-                # TODO - every 5 seconds output a summary onto a new line
 
     except (KeyboardInterrupt, SystemExit):
         print("\n")
