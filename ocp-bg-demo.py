@@ -106,12 +106,16 @@ if __name__ == "__main__":
                 last_five_sec_report = now
 
     except (KeyboardInterrupt, SystemExit):
-        print("\n")
-        # TODO - summarize results
-        #   TODO - output total request count
-        #   TODO - output total request bytes xfered
-        #   TODO - output # of requests by response type
-        #   TODO - output # of requests by key
+        """
+        data_keys = {}
+        for sec,item in data.iteritems():
+            if item[0]['key'] not in data_keys:  data_keys[item[0]['key']] = 1
+            else:  data_keys[item[0]['key']] += 1
+
+        print "%s total requests in %s seconds" % (sum(data_keys.values()),max(data.keys())-min(data.keys()))
+        """
+
+        print "\n------------\n"
         sys.exit()
 
 
