@@ -83,14 +83,14 @@ if __name__ == "__main__":
                 for k in sorted(data_keys):
                     if k == '-':  continue
                     i += 1
-                    #print("\x1b[0;37;%sm%s\x1b[0m" % (i,' ' * int(round( (data_keys[k]/sum(data_keys.values()))*(PROGRESS_BAR_CHARS_WIDTH )))), end="")
                     sys.stdout.write("\x1b[0;37;%sm%s\x1b[0m" % (i,' ' * int(round( (data_keys[k]/sum(data_keys.values()))*(PROGRESS_BAR_CHARS_WIDTH )))) )
                 sys.stdout.write("\r")
                 sys.stdout.flush()
-                #for k in data_keys:  print "%s - %s" % (k,data_keys[k])
-                #print data_keys
                 last_sec_report = now
-            if now>last_five_sec_report:
+            elif now>last_five_sec_report+5:
+                sys.stdout.write("xx%s\r" % ' '*(PROGRESS_BAR_CHARS_WIDTH+1))
+                sys.stdout.flush()
+
                 last_five_sec_report = now
                 # TODO - every 5 seconds output a summary onto a new line
 
