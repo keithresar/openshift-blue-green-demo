@@ -8,7 +8,6 @@ import Queue
 import socket
 import urllib2
 import threading
-#from threading import Thread
 
 
 # TODO - store in yaml file
