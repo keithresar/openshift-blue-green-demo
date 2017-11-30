@@ -5,21 +5,23 @@ import re
 import sys
 import time
 import Queue
+import socket
 import urllib2
-from threading import Thread
+import threading
+#from threading import Thread
 
 
 # TODO - store in yaml file
 TARGET_URL="http://web-simple-php.ocp.vultr.lab.422long.com/bgtest.php"
 STATS_FREQ_SECS=5
-THREAD_COUNT=10
+THREAD_COUNT=1
 PROGRESS_BAR_CHARS_WIDTH=100
 
 
 
-class Worker(Thread):
+class Worker(threading.Thread):
     def __init__(self, results_queue):
-        Thread.__init__(self)
+        threading.Thread.__init__(self)
         self.results_queue = results_queue
         self.daemon = True
         self.start()
@@ -27,8 +29,9 @@ class Worker(Thread):
     def run(self):
         while True:
             start = time.time()
+            #print threading.current_thread() 
             try:
-                response = urllib2.urlopen(TARGET_URL)
+                response = urllib2.urlopen(TARGET_URL, timeout=3)
                 html = response.read()
                 response_duration = time.time()-start
                 response_size = len(html)
@@ -36,7 +39,9 @@ class Worker(Thread):
                 m = re.search("([a-z]+)\.(jpg|png)",html)
                 response_key = m.group(1)
 
-            except urllib2.HTTPError as e:
+            except (urllib2.HTTPError, urllib2.URLError, socket.timeout, socket.error) as e:
+                continue
+                print e
                 response_duration = time.time()-start
                 response_size = 0
                 response_key = "-"
@@ -80,7 +85,7 @@ if __name__ == "__main__":
                     else:  data_keys[item['key']] += 1
                 i = 40
                 for k in sorted(data_keys):
-                    if k == '-':  continue
+                    #if k == '-':  continue
                     i += 1
                     sys.stdout.write("\x1b[0;37;%sm%s\x1b[0m" % (i,' ' * int(round( (data_keys[k]/sum(data_keys.values()))*(PROGRESS_BAR_CHARS_WIDTH )))) )
                 sys.stdout.write("\r")
@@ -98,7 +103,7 @@ if __name__ == "__main__":
                         else:  data_keys[item['key']] += 1
                 i = 40
                 for k in sorted(data_keys):
-                    if k == '-':  continue
+                    #if k == '-':  continue
                     i += 1
                     sys.stdout.write("\x1b[0;37;%sm%s: %s%% (%s reqs)\x1b[0m\t" % (i,k,int(round((data_keys[k]/sum(data_keys.values()))*100 )),data_keys[k]))
                 sys.stdout.write("\n")
