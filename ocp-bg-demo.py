@@ -10,7 +10,7 @@ from threading import Thread
 
 
 # TODO - store in yaml file
-TARGET_URL="http://104.238.162.143/images/bgtest.php"
+TARGET_URL="http://web-simple-php.ocp.vultr.lab.422long.com/bgtest.php"
 STATS_FREQ_SECS=5
 THREAD_COUNT=10
 PROGRESS_BAR_CHARS_WIDTH=100
