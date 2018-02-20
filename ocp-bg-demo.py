@@ -15,6 +15,7 @@ TARGET_URL="http://web-simple-php.ocp.vultr.lab.422long.com/bgtest.php"
 STATS_FREQ_SECS=5
 THREAD_COUNT=1
 PROGRESS_BAR_CHARS_WIDTH=100
+TIME_SLEEP=.02
 
 
 
@@ -50,7 +51,7 @@ class Worker(threading.Thread):
                                         'size': response_size, 
                                         'duration_ms': int(response_duration*1000),
                                         'time': int(time.time())})
-
+                time.sleep(TIME_SLEEP)
 
 
 if __name__ == "__main__":
