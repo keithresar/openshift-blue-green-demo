@@ -11,7 +11,7 @@ import threading
 
 
 # TODO - store in yaml file
-TARGET_URL="http://web-simple-php.ocp.vultr.lab.422long.com/bgtest.php"
+TARGET_URL=sys.argv[1]
 STATS_FREQ_SECS=5
 THREAD_COUNT=1
 PROGRESS_BAR_CHARS_WIDTH=100
@@ -36,8 +36,11 @@ class Worker(threading.Thread):
                 response_duration = time.time()-start
                 response_size = len(html)
                 
-                m = re.search("([a-z]+)\.(jpg|png)",html)
-                response_key = m.group(1)
+                #m = re.search("([a-z]+)\.(jpg|png)",html)
+                m = re.search("CATS ONLY",html)
+                #response_key = m.group(1)
+                if m:  response_key = "cats"
+                else:  response_key = "pets"
 
             except (urllib2.HTTPError, urllib2.URLError, socket.timeout, socket.error) as e:
                 continue
