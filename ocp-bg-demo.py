@@ -87,7 +87,7 @@ if __name__ == "__main__":
                     if item['key'] not in data_keys:  data_keys[item['key']] = 1
                     else:  data_keys[item['key']] += 1
                 i = 40
-                for k in sorted(data_keys):
+                for k in sorted(data_keys,reverse=True):
                     #if k == '-':  continue
                     i += 1
                     sys.stdout.write("\x1b[0;37;%sm%s\x1b[0m" % (i,' ' * int(round( (data_keys[k]/sum(data_keys.values()))*(PROGRESS_BAR_CHARS_WIDTH )))) )
@@ -105,7 +105,7 @@ if __name__ == "__main__":
                         if item['key'] not in data_keys:  data_keys[item['key']] = 1
                         else:  data_keys[item['key']] += 1
                 i = 40
-                for k in sorted(data_keys):
+                for k in sorted(data_keys,reverse=True):
                     #if k == '-':  continue
                     i += 1
                     sys.stdout.write("\x1b[0;37;%sm%s: %s%% (%s reqs)\x1b[0m\t" % (i,k,int(round((data_keys[k]/sum(data_keys.values()))*100 )),data_keys[k]))
